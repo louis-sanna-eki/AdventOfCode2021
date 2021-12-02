@@ -10,4 +10,20 @@ def parse_line(line):
 
 commands = list(map(parse_line, lines))
 
-print(commands)
+depth = 0
+position = 0
+
+for command in commands:
+    direction = command[0]
+    magnitude = command[1]
+
+    if (direction == 'down'):
+        depth += magnitude
+    if (direction == 'up'):
+        depth -= magnitude
+    if (direction == 'forward'):
+        position += magnitude
+
+result = depth * position
+
+print(result)
