@@ -6,15 +6,16 @@ file.close()
 
 crabs = list(map(int,line.split(',')))
 
+def sum_linear_serie(n):
+    return n * (n + 1) / 2
+
 crab_max = max(crabs)
-
-min_fuel = math.inf
-
+fuel_min = math.inf
 for position in range(0, crab_max + 1):
     fuel = 0
     for crab in crabs:
-        fuel += abs(position - crab)
-    if fuel < min_fuel:
-        min_fuel = fuel
+        fuel += sum_linear_serie(abs(position - crab))
+    if fuel < fuel_min:
+        fuel_min = fuel
 
-print(min_fuel)
+print(fuel_min)
