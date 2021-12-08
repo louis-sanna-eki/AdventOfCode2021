@@ -42,48 +42,36 @@ numbers_by_segment_count = {
 all_segments = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'}
 
 
-def analyse_mapping(patterns):
-    candidate_segments_per_letter = {
-        'a': all_segments.copy(),
-        'b': all_segments.copy(),
-        'c': all_segments.copy(),
-        'd': all_segments.copy(),
-        'e': all_segments.copy(),
-        'f': all_segments.copy(),
-        'g': all_segments.copy(),
-        'h': all_segments.copy(),
-    }
+def get_possible_numbers(pattern, number_by_pattern):
+    result = []
+    candidate_numbers = numbers_by_segment_count[len(pattern)]
+    for number in candidate_numbers:
+        if number not in number_by_pattern.values():
+            result.append(number)
+    return result
+
+
+def build_possible_mappings(patterns):
+    number_by_pattern_mappings = [{}]
     for pattern in patterns:
-        potential_numbers = numbers_by_segment_count[len(pattern)]
-        for letter in pattern:
-            potential_segments = map(
-                lambda number: segments_by_number[number], potential_numbers)
-            potential_segments = set.union(*potential_segments)
-            candidate_segments_per_letter[letter] = candidate_segments_per_letter[letter].intersection(
-                potential_segments)
-    print(candidate_segments_per_letter)
-
-
-def get_digit(output):
-    candidate_numbers = numbers_by_segment_count[len(output)]
-    if len(candidate_numbers) == 1:
-        return candidate_numbers[0]
-    return None
-
-
-def compute_value(output, patterns):
-    digit = get_digit(output)
-    if type(digit) is int:
-        return digit
-    return 0
+        new_number_by_pattern_mappings = []
+        for mapping in number_by_pattern_mappings:
+            possible_numbers = get_possible_numbers(pattern, mapping)
+            for number in possible_numbers:
+                number_by_pattern = mapping.copy()
+                number_by_pattern[pattern] = number
+                new_number_by_pattern_mappings.append(number_by_pattern)
+        number_by_pattern_mappings = new_number_by_pattern_mappings
+    return number_by_pattern_mappings
 
 
 for line in lines:
     [raw_patterns, raw_outputs] = line.split(' | ')
     patterns = raw_patterns.split(' ')
     outputs = raw_outputs.split(' ')
-    analyse_mapping(patterns)
-    for multiple, output in enumerate(outputs):
-        result += compute_value(output, patterns) * 10**multiple
+    # for multiple, output in enumerate(outputs):
+    #     result += compute_value(output, patterns) * 10**multiple
 
+print(build_possible_mappings(patterns))
+print(len(build_possible_mappings(patterns)))
 print(result)
