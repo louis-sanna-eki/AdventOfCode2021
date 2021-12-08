@@ -40,14 +40,17 @@ numbers_by_segment_count = {
 }
 
 
-def get_number(output):
+def get_digit(output):
     candidate_numbers = numbers_by_segment_count[len(output)]
     if len(candidate_numbers) == 1:
         return candidate_numbers[0]
     return None
 
 
-def compute_value(outputs, patterns):
+def compute_value(output, patterns):
+    digit = get_digit(output)
+    if type(digit) is int:
+        return digit
     return 0
 
 
@@ -55,7 +58,7 @@ for line in lines:
     [raw_patterns, raw_outputs] = line.split(' | ')
     patterns = raw_patterns.split(' ')
     outputs = raw_outputs.split(' ')
-    for output in outputs:
-        result += compute_value(output, patterns)
+    for multiple, output in enumerate(outputs):
+        result += compute_value(output, patterns) * 10**multiple
 
 print(result)
