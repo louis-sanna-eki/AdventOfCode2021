@@ -47,13 +47,15 @@ def get_number(output):
     return None
 
 
+def compute_value(outputs, patterns):
+    return 0
+
+
 for line in lines:
     [raw_patterns, raw_outputs] = line.split(' | ')
     patterns = raw_patterns.split(' ')
     outputs = raw_outputs.split(' ')
     for output in outputs:
-        number = get_number(output)
-        if number in [1, 4, 7, 8]:
-            result += 1
+        result += compute_value(output, patterns)
 
 print(result)
