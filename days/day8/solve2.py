@@ -1,3 +1,5 @@
+import functools
+
 file = open('days/day8/input.txt', 'r')
 lines = file.read().splitlines()
 file.close()
@@ -19,7 +21,7 @@ segment_count_by_number = {
 
 segments_by_number = {
     0: {'a', 'b', 'c', 'e', 'f', 'g'},
-    1: {'c', 'd'},
+    1: {'c', 'f'},
     2: {'a', 'c', 'd', 'e', 'g'},
     3: {'a', 'c', 'd', 'f', 'g'},
     4: {'b', 'c', 'd', 'f'},
@@ -38,8 +40,6 @@ numbers_by_segment_count = {
     6: [0, 6, 9],
     7: [8]
 }
-
-all_segments = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'}
 
 
 def get_possible_numbers(pattern, number_by_pattern):
@@ -65,13 +65,92 @@ def build_possible_mappings(patterns):
     return number_by_pattern_mappings
 
 
+def signature_key(signature1, signature2):
+    if signature1['intersection_cardinal'] < signature2['intersection_cardinal']:
+        return -1
+    elif signature1['intersection_cardinal'] > signature2['intersection_cardinal']:
+        return 1
+    elif signature1['cardinal'] > signature2['cardinal']:
+        return 1
+    elif signature1['cardinal'] < signature2['cardinal']:
+        return -1
+    else:
+        return 0
+
+
+def build_intersection_signature(signed_number, pattern_by_number):
+    result = []
+    for number in pattern_by_number.keys():
+        signed_pattern = pattern_by_number[signed_number]
+        pattern = pattern_by_number[number]
+        intersection_cardinal = len(
+            signed_pattern.intersection(pattern))
+        cardinal = len(pattern)
+        signature = {'intersection_cardinal': intersection_cardinal,
+                     'cardinal': cardinal}
+        result.append(signature)
+    return sorted(result, key=functools.cmp_to_key(signature_key))
+
+
+def signatures_key(signature1, signature2):
+    for i in range(0, len(signature1)):
+        key = signature_key(signature1[i], signature2[i])
+        if key != 0:
+            return key
+    return 0
+
+
+def build_signatures(pattern_by_number):
+    result = []
+    for number in pattern_by_number.keys():
+        signature = build_intersection_signature(number, pattern_by_number)
+        print(signature)
+        result.append(signature)
+    result.sort(key=functools.cmp_to_key(signatures_key))
+    return result
+
+
+def is_mapping_coherent(number_by_pattern):
+    pattern_by_number = {number: set(pattern) for pattern,
+                         number in number_by_pattern.items()}
+    signatures = build_signatures(pattern_by_number)
+    original_signatures = build_signatures(segments_by_number)
+    result = True
+    for i in range(0, len(signatures)):
+        for j in range(0, len(signatures)):
+            if signatures[i][j]['intersection_cardinal'] != original_signatures[i][j]['intersection_cardinal']:
+                return False
+            if signatures[i][j]['cardinal'] != original_signatures[i][j]['cardinal']:
+                return False
+    return result
+
+
+def find_coherent_mapping(patterns):
+    possible_mappings = build_possible_mappings(patterns)
+    result = None
+    for mapping in possible_mappings:
+        return mapping
+        # if is_mapping_coherent(mapping):
+        #     if result is not None:
+        #         print(result)
+        #         print(mapping)
+        #         raise Exception("Several coherent mapping found")
+        #     result = mapping
+    return result
+
+
+def sort_string(string_to_sort):
+    return ''.join(sorted(string_to_sort))
+
+
 for line in lines:
     [raw_patterns, raw_outputs] = line.split(' | ')
     patterns = raw_patterns.split(' ')
     outputs = raw_outputs.split(' ')
-    # for multiple, output in enumerate(outputs):
-    #     result += compute_value(output, patterns) * 10**multiple
+    for multiple, output in enumerate(outputs):
+        mapping = find_coherent_mapping(map(sort_string, patterns))
+        print(mapping)
+        result += mapping[sort_string(output)] * 10**multiple
 
-print(build_possible_mappings(patterns))
-print(len(build_possible_mappings(patterns)))
+print(find_coherent_mapping(patterns))
 print(result)
