@@ -6,26 +6,14 @@ points = list(map(lambda line: list(map(int, line)), lines))
 
 
 def is_local_minimum(i, j):
-    try:
-        if points[i][j] > points[i+1][j]:
-            return False
-    except IndexError:
-        pass
-    try:
-        if points[i][j] > points[i-1][j]:
-            return False
-    except IndexError:
-        pass
-    try:
-        if points[i][j] > points[i][j+1]:
-            return False
-    except IndexError:
-        pass
-    try:
-        if points[i][j] > points[i][j-1]:
-            return False
-    except IndexError:
-        pass
+    if i+1 < 100 and points[i][j] >= points[i+1][j]:
+        return False
+    if i-1 >= 0 and points[i][j] >= points[i-1][j]:
+        return False
+    if j+1 < 100 and points[i][j] >= points[i][j+1]:
+        return False
+    if j-1 >= 0 and points[i][j] >= points[i][j-1]:
+        return False
     return True
 
 
