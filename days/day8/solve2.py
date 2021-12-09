@@ -74,6 +74,10 @@ def signature_key(signature1, signature2):
         return 1
     elif signature1['cardinal'] < signature2['cardinal']:
         return -1
+    elif signature1['signed_cardinal'] > signature2['signed_cardinal']:
+        return 1
+    elif signature1['signed_cardinal'] < signature2['signed_cardinal']:
+        return -1
     else:
         return 0
 
@@ -86,8 +90,9 @@ def build_intersection_signature(signed_number, pattern_by_number):
         intersection_cardinal = len(
             signed_pattern.intersection(pattern))
         cardinal = len(pattern)
+        signed_cardinal = len(signed_pattern)
         signature = {'intersection_cardinal': intersection_cardinal,
-                     'cardinal': cardinal}
+                     'cardinal': cardinal, 'signed_cardinal': signed_cardinal}
         result.append(signature)
     return sorted(result, key=functools.cmp_to_key(signature_key))
 
@@ -122,6 +127,8 @@ def is_mapping_coherent(number_by_pattern):
                 return False
             if signatures[i][j]['cardinal'] != original_signatures[i][j]['cardinal']:
                 return False
+            if signatures[i][j]['signed_cardinal'] != original_signatures[i][j]['signed_cardinal']:
+                return False
     return result
 
 
@@ -129,13 +136,12 @@ def find_coherent_mapping(patterns):
     possible_mappings = build_possible_mappings(patterns)
     result = None
     for mapping in possible_mappings:
-        return mapping
-        # if is_mapping_coherent(mapping):
-        #     if result is not None:
-        #         print(result)
-        #         print(mapping)
-        #         raise Exception("Several coherent mapping found")
-        #     result = mapping
+        if is_mapping_coherent(mapping):
+            if result is not None:
+                print(result)
+                print(mapping)
+                raise Exception("Several coherent mapping found")
+            result = mapping
     return result
 
 
