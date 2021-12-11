@@ -4,7 +4,7 @@ file.close()
 
 octopuses = [list(map(int, line)) for line in lines]
 
-NUMBER_OF_STEPS = 100
+NUMBER_OF_STEPS = 1000
 
 
 def simulate_step():
@@ -66,6 +66,10 @@ def simulate_step():
 
 result = 0
 for step in range(1, NUMBER_OF_STEPS + 1):
-    result += simulate_step()
+    flash_count = simulate_step()
+    octopus_count = len(octopuses) * len(octopuses[0])
+    if flash_count == octopus_count:
+        result = step
+        break
 
 print(result)
