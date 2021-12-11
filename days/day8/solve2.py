@@ -6,7 +6,7 @@ file.close()
 
 result = 0
 
-segments_by_number = {
+pattern_by_number = {
     0: 'abcefg',
     1: 'cf',
     2: 'acdeg',
@@ -18,10 +18,12 @@ segments_by_number = {
     8: 'abcdefg',
     9: 'abcdfg'
 }
-number_by_segments = {segment: number for number,
-                      segment in segments_by_number.items()}
+number_by_pattern = {segment: number for number,
+                     segment in pattern_by_number.items()}
 
 all_letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+original_index_by_letter = {
+    letter: index for index, letter in enumerate(all_letters)}
 
 
 def sort_string(string_to_sort):
@@ -29,20 +31,57 @@ def sort_string(string_to_sort):
 
 
 def sort_patterns(patterns):
-    sorted_patterns = map(lambda pattern: sort_string(pattern), patterns)
+    sorted_patterns = list(map(lambda pattern: sort_string(pattern), patterns))
     sorted_patterns.sort()
     return sorted_patterns
+
+
+original_patterns = sort_patterns(
+    [pattern for number, pattern in pattern_by_number.items()])
+
+
+def un_permute_pattern(pattern, permutation):
+    result = ''
+    index_by_letter = {
+        letter: index for index, letter in enumerate(permutation)}
+    for letter in pattern:
+        result += all_letters[index_by_letter[letter]]
+    return result
+
+
+def un_permute_patterns(patterns, permutation):
+    return map(
+        lambda pattern: un_permute_pattern(pattern, permutation), patterns)
 
 
 def get_permutation(patterns):
     permutations = itertools.permutations(all_letters)
     for permutation in permutations:
-        print('permutation', permutation)
+        permuted_patterns = sort_patterns(
+            un_permute_patterns(patterns, permutation))
+        is_valid_permutation = True
+        for index in range(0, len(original_patterns)):
+            if permuted_patterns[index] != original_patterns[index]:
+                is_valid_permutation = False
+        if is_valid_permutation:
+            return permutation
 
 
 for line in lines:
     [raw_patterns, raw_outputs] = line.split(' | ')
     patterns = raw_patterns.split(' ')
     outputs = raw_outputs.split(' ')
-    for output in outputs:
-        number = get_permutation(patterns)
+    permutation = get_permutation(patterns)
+    index_by_letter = {
+        letter: index for index, letter in enumerate(permutation)}
+    result = 0
+    for index, output in enumerate(outputs):
+        print('output', output)
+        print('un_permute_pattern(output)',
+              un_permute_pattern(output, permutation))
+        unpermuted_output = sort_string(
+            un_permute_pattern(output, permutation))
+        number_to_decode = number_by_pattern[unpermuted_output]
+        result += number_to_decode * 10**index
+
+print(result)
