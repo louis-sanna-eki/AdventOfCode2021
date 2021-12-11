@@ -67,6 +67,8 @@ def get_permutation(patterns):
             return permutation
 
 
+result = 0
+
 for line in lines:
     [raw_patterns, raw_outputs] = line.split(' | ')
     patterns = raw_patterns.split(' ')
@@ -74,14 +76,10 @@ for line in lines:
     permutation = get_permutation(patterns)
     index_by_letter = {
         letter: index for index, letter in enumerate(permutation)}
-    result = 0
     for index, output in enumerate(outputs):
-        print('output', output)
-        print('un_permute_pattern(output)',
-              un_permute_pattern(output, permutation))
         unpermuted_output = sort_string(
             un_permute_pattern(output, permutation))
         number_to_decode = number_by_pattern[unpermuted_output]
-        result += number_to_decode * 10**index
+        result += number_to_decode * 10**(3-index)
 
 print(result)
