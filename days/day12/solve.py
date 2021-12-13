@@ -14,7 +14,7 @@ for line in lines:
     neighbors_by_cave[cave2].append(cave1)
 
 valid_paths = []
-paths = [{"visited": {}, "path": ["start"]}]
+paths = [{"visited": {}, "path": ["start"], "joker": True}]
 
 while paths:
     current_path = paths.pop()
@@ -24,11 +24,15 @@ while paths:
     for cave in neighbors_by_cave[current_path["path"][-1]]:
         if cave == "start":
             continue
-        if cave.isupper() is False and cave in current_path["visited"]:
-            continue
+        is_second_small_visit = cave.isupper(
+        ) is False and cave in current_path["visited"]
+        if is_second_small_visit:
+            if current_path["joker"] is False:
+                continue
         new_path = {
             "visited": current_path["visited"].copy(),
-            "path": current_path["path"].copy()
+            "path": current_path["path"].copy(),
+            "joker": False if is_second_small_visit else current_path["joker"],
         }
         new_path["visited"][cave] = True
         new_path["path"].append(cave)
