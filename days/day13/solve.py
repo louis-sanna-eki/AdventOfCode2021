@@ -2,9 +2,6 @@ file = open('days/day13/input.txt', 'r')
 [raw_dots, raw_folds] = file.read().split("\n\n")
 file.close()
 
-print(raw_dots)
-print(raw_folds)
-
 
 def parse_raw_dot(raw_dot):
     [raw_x, raw_y] = raw_dot.split(",")
@@ -23,37 +20,37 @@ folds = list(map(parse_raw_fold, raw_folds.splitlines()))
 
 MAX_SIZE = 2000
 
-paper = [[0] * MAX_SIZE for _ in range(0, MAX_SIZE)]
+paper = [["."] * MAX_SIZE for _ in range(0, MAX_SIZE)]
 
 
 def fold_y(fold):
     line_y = fold["line_index"]
     for x in range(0, MAX_SIZE):
         for y in range(0, MAX_SIZE):
-            if paper[y][x] == 0:
+            if paper[y][x] == ".":
                 continue
             if y <= line_y:
                 continue
             new_x = x
             new_y = y - 2 * (y - line_y)
-            paper[y][x] = 0
+            paper[y][x] = "."
             if is_in_range(new_x, new_y):
-                paper[new_y][new_x] = 1
+                paper[new_y][new_x] = "#"
 
 
 def fold_x(fold):
     line_x = fold["line_index"]
     for x in range(0, MAX_SIZE):
         for y in range(0, MAX_SIZE):
-            if paper[y][x] == 0:
+            if paper[y][x] == ".":
                 continue
             if x <= line_x:
                 continue
             new_x = x - 2 * (x - line_x)
             new_y = y
-            paper[y][x] = 0
+            paper[y][x] = "."
             if is_in_range(new_x, new_y):
-                paper[new_y][new_x] = 1
+                paper[new_y][new_x] = "#"
 
 
 def is_in_range(x, y):
@@ -70,21 +67,15 @@ def is_in_range(x, y):
 
 for dot in dots:
     [x, y] = dot
-    paper[y][x] = 1
+    paper[y][x] = "#"
 
 
-fold_x(folds[0])
+for fold in folds:
+    if fold["dimension"] == "x":
+        fold_x(fold)
+    if fold["dimension"] == "y":
+        fold_y(fold)
 
 
-def score_paper():
-    result = 0
-    for x in range(0, MAX_SIZE):
-        for y in range(0, MAX_SIZE):
-            if paper[y][x] == 1:
-                result += 1
-    return result
-
-
-result = score_paper()
-
-print(result)
+for p in paper[:10]:
+    print(p[30:40])
