@@ -35,8 +35,9 @@ for step in range(1, NUMBER_OF_STEPS + 1):
             new_count_by_pair[pair] = count
             continue
         insert = insert_by_pair[pair]
-        new_left_pair = pair[0] + insert
-        new_right_pair = insert + pair[1]
+        [first_letter, second_letter] = pair
+        new_left_pair = first_letter + insert
+        new_right_pair = insert + second_letter
         new_count_by_pair[new_left_pair] += count
         new_count_by_pair[new_right_pair] += count
     count_by_pair = new_count_by_pair
@@ -44,9 +45,8 @@ for step in range(1, NUMBER_OF_STEPS + 1):
 count_by_letter = defaultdict(lambda: 0)
 
 for pair, count in count_by_pair.items():
-    first_letter = pair[0]
+    [first_letter, second_letter] = pair
     count_by_letter[first_letter] += count
-    second_letter = pair[1]
     count_by_letter[second_letter] += count
 
 count_by_letter[first_template_letter] += 1  # Hack to count every letter twice
