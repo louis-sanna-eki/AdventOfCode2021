@@ -6,15 +6,37 @@ file = open('days/day15/input.txt', 'r')
 lines = file.read().splitlines()
 file.close()
 
+floor = [list(map(int, line)) for line in lines]
 
-def build_square(raw_risk):
+floor_INCREASE_FACTOR = 5
+
+original_size = len(floor)
+
+for _ in range(0, original_size * (floor_INCREASE_FACTOR - 1)):
+    floor.append([])
+
+for x in range(0, len(floor)):
+    for y in range(0, len(floor)):  # assume square input
+        if x < original_size and y < original_size:
+            continue
+        tile_x = x // original_size
+        tile_y = y // original_size
+        original_x = x % original_size
+        original_y = y % original_size
+        new_risk = (floor[original_x][original_y] + tile_x + tile_y) % 9
+        if new_risk == 0:
+            new_risk = 9
+        floor[x].append(new_risk)
+
+
+def build_square(risk):
     return dict({"lowest_risk": math.inf,
-                 "risk": int(raw_risk),
+                 "risk": risk,
                  "visited": False,
                  })
 
 
-squares = [list(map(build_square, line)) for line in lines]
+squares = [list(map(build_square, row)) for row in floor]
 
 boundary = PriorityQueue()
 
