@@ -23,6 +23,10 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(parse("D2FE28")[0]
                          ["decimal"], 2021)
 
+    def test_length(self):
+        self.assertEqual(parse("D2FE28")[0]
+                         ["length"], 24)
+
 
 if __name__ == '__main__':
     unittest.main()

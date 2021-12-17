@@ -28,11 +28,15 @@ def parse_first_packet(transmission):
         if transmission[index] == "0":
             break
         index += 5
+    semantic_length = index + 4 + 1  # block length + 0 indexing
+    remainder = semantic_length % 4
+    length = semantic_length + (4 - remainder) % 4
     decimal = int(''.join(bit_blocks), 2)
     return {
         "_type": _type,
         "binary": transmission,
         "decimal": decimal,
+        "length": length,
         "version": version
     }
 
