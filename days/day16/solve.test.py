@@ -17,7 +17,11 @@ class TestStringMethods(unittest.TestCase):
 
     def test_type(self):
         self.assertEqual(parse("D2FE28")[0]
-                         ["type"], 4)
+                         ["_type"], 4)
+
+    def test_decimal(self):
+        self.assertEqual(parse("D2FE28")[0]
+                         ["decimal"], 2021)
 
 
 if __name__ == '__main__':
