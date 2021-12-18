@@ -9,7 +9,7 @@ class TestStringMethods(unittest.TestCase):
 
     def test_hex_to_binary(self):
         self.assertEqual(parse("D2FE28")[0]
-                         ["binary"], '110100101111111000101000')
+                         ["binary"], '110100101111111000101')
 
     def test_version(self):
         self.assertEqual(parse("D2FE28")[0]
@@ -25,13 +25,16 @@ class TestStringMethods(unittest.TestCase):
 
     def test_length(self):
         self.assertEqual(parse("D2FE28")[0]
-                         ["length"], 24)
+                         ["length"], 21)
 
-    def test_multiple_value(self):
-        self.assertEqual(parse("D2FE28D2FE28")[0]
-                         ["decimal"], 2021)
-        self.assertEqual(parse("D2FE28D2FE28")[1]
-                         ["decimal"], 2021)
+    def test_operator_packets(self):
+        [operator] = parse("38006F45291200")
+        self.assertEqual(len(operator["packets"]), 2)
+
+    def test_operator_packets_subpackets(self):
+        [operator] = parse("38006F45291200")
+        self.assertEqual(operator["packets"][0]["decimal"], 10)
+        self.assertEqual(operator["packets"][1]["decimal"], 20)
 
 
 if __name__ == '__main__':
