@@ -1,5 +1,5 @@
 file = open('days/day15/input.txt', 'r')
-transmission = file.read()
+raw_transmission = file.read()
 file.close()
 
 BASE = 16
@@ -13,12 +13,7 @@ def parse_hex(char):
     return bin(int(char, BASE))[2:].zfill(NUM_OF_BITS)
 
 
-def parse_first_packet(transmission):
-    version_header = transmission[:VERSION_HEADER_LENGTH]
-    version = int(version_header, 2)
-    type_header = transmission[VERSION_HEADER_LENGTH:
-                               VERSION_HEADER_LENGTH+TYPE_HEADER_LENGTH]
-    _type = int(type_header, 2)
+def parse_fist_value(transmission, _type, version):
     index = VERSION_HEADER_LENGTH+TYPE_HEADER_LENGTH
     bit_blocks = []
     while True:
@@ -41,12 +36,23 @@ def parse_first_packet(transmission):
     }
 
 
-def parse(transmission):
+def parse_first_packet(transmission):
+    version_header = transmission[:VERSION_HEADER_LENGTH]
+    version = int(version_header, 2)
+    type_header = transmission[VERSION_HEADER_LENGTH:
+                               VERSION_HEADER_LENGTH+TYPE_HEADER_LENGTH]
+    _type = int(type_header, 2)
+    if _type == 4:
+        return parse_fist_value(transmission, _type, version)
+    raise NotImplementedError
+
+
+def parse(raw_transmission):
     result = []
-    if (transmission == ''):
+    if (raw_transmission == ''):
         return result
-    binaries = list(map(parse_hex, transmission))
-    binary_transmission = ''.join(binaries)
-    packet = parse_first_packet(binary_transmission)
+    binaries = list(map(parse_hex, raw_transmission))
+    transmission = ''.join(binaries)
+    packet = parse_first_packet(transmission)
     result.append(packet)
     return result
