@@ -33,8 +33,8 @@ def parse_number(raw_number, parent=None):
         raw_right = raw_number[comma_index+1:-1]
         number = dict({
             "parent": parent,
-            "left": parse_number(raw_left),
-            "right": parse_number(raw_right),
+            "left": None,
+            "right": None,
             "value": None
         })
         number["left"] = parse_number(raw_left, number)
@@ -51,42 +51,56 @@ def number_to_string(number):  # helper function for testing
     return result
 
 
-def find_with_left_dfs(number, check_condition, level=0):
-    if check_condition(number, level):
+def pretty_print(number):
+    print(number_to_string(number))
+
+
+def find_with_left_dfs(number, check_condition):
+    if check_condition(number):
         return number
     if number["value"] is not None:
         return None
     found_on_left = find_with_left_dfs(
-        number["left"], check_condition, level+1)
+        number["left"], check_condition)
     if found_on_left is not None:
         return found_on_left
     found_on_right = find_with_left_dfs(
-        number["right"], check_condition, level+1)
+        number["right"], check_condition)
     if found_on_right is not None:
         return found_on_right
     return None
 
 
-def find_with_right_dfs(number, check_condition, level=0):
-    if check_condition(number, level):
+def find_with_right_dfs(number, check_condition):
+    if check_condition(number):
         return number
     found_on_right = find_with_right_dfs(
-        number["right"], check_condition, level+1)
+        number["right"], check_condition)
     if found_on_right is not None:
         return found_on_right
     found_on_left = find_with_right_dfs(
-        number["left"], check_condition, level+1)
+        number["left"], check_condition)
     if found_on_left is not None:
         return found_on_left
     return None
 
 
-def should_explode(node, level):
+def level(number):
+    result = 0
+    while True:
+        if number["parent"] is None:
+            break
+        number = number["parent"]
+        result += 1
+    return result
+
+
+def should_explode(node):
     if node is None:
         return False
     if node["value"] is not None:
         return False
-    if level >= 4:
+    if level(node) >= 4:
         return True
     return False
 
@@ -95,7 +109,7 @@ def find_number_to_explode(number):
     return find_with_left_dfs(number, should_explode)
 
 
-def should_split(node, level):
+def should_split(node):
     if node is None:
         return False
     if node["value"] is None:
@@ -131,7 +145,7 @@ def find_right_neighbor(number, check_condition):
     return find_right_neighbor(number["parent"], check_condition)
 
 
-def is_natural(number, level):
+def is_natural(number):
     if number["value"] is not None:
         return True
     return False
@@ -190,11 +204,28 @@ def magnitude(number):
     return 3 * magnitude(number["left"]) + 2 * magnitude(number["right"])
 
 
-number_sum = parse_number(lines[0])
-for index in range(1, len(lines)):
-    number = parse_number(lines[index])
-    number_sum = add(number_sum, number)
+def part1():
+    number_sum = parse_number(lines[0])
+    for index in range(1, len(lines)):
+        number = parse_number(lines[index])
+        number_sum = add(number_sum, number)
+    result = magnitude(number_sum)
+    return result
 
-result = magnitude(number_sum)
 
-print(result)
+def part2():
+    max_magnitude = -math.inf
+    # Beware side effect!
+    for i in range(0, len(lines)):
+        for j in range(0, len(lines)):
+            if i == j:
+                continue
+            number = add(parse_number(lines[i]), parse_number(lines[j]))
+            sum_magnitude = magnitude(number)
+            if sum_magnitude > max_magnitude:
+                max_magnitude = sum_magnitude
+    return max_magnitude
+
+
+print("part1", part1())
+print("part2", part2())
