@@ -27,6 +27,12 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(parse("D2FE28")[0]
                          ["length"], 24)
 
+    def test_multiple_value(self):
+        self.assertEqual(parse("D2FE28D2FE28")[0]
+                         ["decimal"], 2021)
+        self.assertEqual(parse("D2FE28D2FE28")[1]
+                         ["decimal"], 2021)
+
 
 if __name__ == '__main__':
     unittest.main()

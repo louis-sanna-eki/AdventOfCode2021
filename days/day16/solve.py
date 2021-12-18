@@ -29,7 +29,7 @@ def parse_fist_value(transmission, _type, version):
     decimal = int(''.join(bit_blocks), 2)
     return {
         "_type": _type,
-        "binary": transmission,
+        "binary": transmission[0:length],
         "decimal": decimal,
         "length": length,
         "version": version
@@ -47,12 +47,17 @@ def parse_first_packet(transmission):
     raise NotImplementedError
 
 
-def parse(raw_transmission):
+def parse_binary(binary):
     result = []
-    if (raw_transmission == ''):
-        return result
-    binaries = list(map(parse_hex, raw_transmission))
-    transmission = ''.join(binaries)
-    packet = parse_first_packet(transmission)
-    result.append(packet)
+    index = 0
+    while index < len(binary):
+        first_packet = parse_first_packet(binary[index:])
+        result.append(first_packet)
+        index += first_packet["length"]
     return result
+
+
+def parse(raw_transmission):
+    binaries = list(map(parse_hex, raw_transmission))
+    binary = ''.join(binaries)
+    return parse_binary(binary)
