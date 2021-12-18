@@ -90,11 +90,11 @@ def find_number_to_explode(number):
 
 
 def is_left(node):
-    return node["parent"]["left"] == node
+    return node["parent"]["left"] is node
 
 
 def is_right(node):
-    return node["parent"]["right"] == node
+    return node["parent"]["right"] is node
 
 
 def find_left_neighbor(number, check_condition):

@@ -20,11 +20,30 @@ class TestDay18Methods(unittest.TestCase):
         self.assertEqual(number_to_explode["left"]["value"], 9)
         self.assertEqual(number_to_explode["right"]["value"], 8)
 
-    def test_reduce_no_regular_left(self):
+    def test_explode_no_regular_left(self):
         number_to_reduce = parse_number(
             "[[[[[9,8],1],2],3],4]")
         number = reduce(number_to_reduce)
         self.assertEqual(number_to_string(number), "[[[[0,9],2],3],4]")
+
+    def test_explode_no_regular_right(self):
+        number_to_reduce = parse_number(
+            "[7,[6,[5,[4,[3,2]]]]]")
+        number = reduce(number_to_reduce)
+        self.assertEqual(number_to_string(number), "[7,[6,[5,[7,0]]]]")
+
+    def test_explode_basic(self):
+        number_to_reduce = parse_number(
+            "[[6,[5,[4,[3,2]]]],1]")
+        number = reduce(number_to_reduce)
+        self.assertEqual(number_to_string(number), "[[6,[5,[7,0]]],3]")
+
+    def test_sequential_explode(self):
+        number_to_reduce = parse_number(
+            "[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]")
+        number = reduce(number_to_reduce)
+        self.assertEqual(number_to_string(number),
+                         "[[3,[2,[8,0]]],[9,[5,[7,0]]]]")
 
 
 if __name__ == '__main__':
