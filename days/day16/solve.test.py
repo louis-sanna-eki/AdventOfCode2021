@@ -27,20 +27,20 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(parse("D2FE28")[0]
                          ["length"], 21)
 
-    def test_operator_packets(self):
+    def test_operator_0_packets(self):
         [operator] = parse("38006F45291200")
         self.assertEqual(len(operator["packets"]), 2)
 
-    def test_operator_packets_subpackets(self):
+    def test_operator_0_packets_subpackets(self):
         [operator] = parse("38006F45291200")
         self.assertEqual(operator["packets"][0]["decimal"], 10)
         self.assertEqual(operator["packets"][1]["decimal"], 20)
 
-    def test_operator_packets_1(self):
+    def test_operator_1_packets(self):
         [operator] = parse("EE00D40C823060")
         self.assertEqual(len(operator["packets"]), 3)
 
-    def test_operator_packets_subpackets_1(self):
+    def test_operator_1_packets_decimal(self):
         [operator] = parse("EE00D40C823060")
         self.assertEqual(operator["packets"][0]["decimal"], 1)
         self.assertEqual(operator["packets"][1]["decimal"], 2)
