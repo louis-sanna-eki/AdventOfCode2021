@@ -182,3 +182,19 @@ def add(number_1, number_2):
     number_1["parent"] = joined_numbers
     number_2["parent"] = joined_numbers
     return reduce(joined_numbers)
+
+
+def magnitude(number):
+    if number["value"] is not None:
+        return number["value"]
+    return 3 * magnitude(number["left"]) + 2 * magnitude(number["right"])
+
+
+number_sum = parse_number(lines[0])
+for index in range(1, len(lines)):
+    number = parse_number(lines[index])
+    number_sum = add(number_sum, number)
+
+result = magnitude(number_sum)
+
+print(result)
