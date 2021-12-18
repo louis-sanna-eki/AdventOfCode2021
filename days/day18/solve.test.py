@@ -1,5 +1,5 @@
 import unittest
-from solve import (find_number_to_explode,
+from solve import (add, find_number_to_explode,
                    number_to_string, parse_number, reduce)
 
 
@@ -49,6 +49,15 @@ class TestDay18Methods(unittest.TestCase):
         number_to_reduce = parse_number(
             "[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]")
         number = reduce(number_to_reduce)
+        self.assertEqual(number_to_string(number),
+                         "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]")
+
+    def test_add(self):
+        number_1 = parse_number(
+            "[[[[4,3],4],4],[7,[[8,4],9]]]")
+        number_2 = parse_number(
+            "[1,1]")
+        number = add(number_1, number_2)
         self.assertEqual(number_to_string(number),
                          "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]")
 

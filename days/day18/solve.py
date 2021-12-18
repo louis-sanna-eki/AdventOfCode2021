@@ -170,3 +170,15 @@ def reduce(number):
             continue
         break
     return number
+
+
+def add(number_1, number_2):
+    joined_numbers = dict({
+        "parent": None,
+        "left": number_1,
+        "right": number_2,
+        "value": None
+    })
+    number_1["parent"] = joined_numbers
+    number_2["parent"] = joined_numbers
+    return reduce(joined_numbers)
