@@ -111,6 +111,33 @@ def compute_packet_version_sum(raw_transmission):
     return sum_version(packet)
 
 
-result = compute_packet_version_sum(raw_transmission)
+def compute_value(packet):
+    if packet["_type"] == 4:
+        return packet["decimal"]
+    if packet["_type"] == 0:
+        return sum(compute_value(packet) for packet in packet["packets"])
+    if packet["_type"] == 1:
+        return math.prod(compute_value(packet) for packet in packet["packets"])
+    if packet["_type"] == 2:
+        return min(compute_value(packet) for packet in packet["packets"])
+    if packet["_type"] == 3:
+        return max(compute_value(packet) for packet in packet["packets"])
+    if packet["_type"] == 5:
+        [first_packet, second_packet] = packet["packets"]
+        greater = compute_value(first_packet) > compute_value(second_packet)
+        return 1 if greater else 0
+    if packet["_type"] == 6:
+        [first_packet, second_packet] = packet["packets"]
+        lesser = compute_value(first_packet) < compute_value(second_packet)
+        return 1 if lesser else 0
+    if packet["_type"] == 7:
+        [first_packet, second_packet] = packet["packets"]
+        equal = compute_value(first_packet) == compute_value(second_packet)
+        return 1 if equal else 0
+    raise NotImplementedError
+
+
+[packet] = parse(raw_transmission)
+result = compute_value(packet)
 
 print(result)
