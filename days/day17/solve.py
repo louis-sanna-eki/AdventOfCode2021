@@ -64,11 +64,32 @@ def compute_max_y(probe):
         probe = apply_step(probe)
 
 
-all_max_y = []
-for x in range(0, x_range_max):
-    for y in range(0, x_range_max):
-        probe = dict({"x": 0, "y": 0, "x_velocity": x, "y_velocity": y})
-        all_max_y.append(compute_max_y(probe))
-result = max(all_max_y)
+def will_cross_area(probe):
+    while True:
+        if is_in_range(probe):
+            return True
+        if is_escaped(probe):
+            return False
+        probe = apply_step(probe)
 
-print(result)
+
+def part_1():
+    all_max_y = []
+    for x in range(0, x_range_max):
+        for y in range(0, x_range_max):
+            probe = dict({"x": 0, "y": 0, "x_velocity": x, "y_velocity": y})
+            all_max_y.append(compute_max_y(probe))
+    return max(all_max_y)
+
+
+def part_2():
+    count = 0
+    for x in range(0, 200):
+        for y in range(-200, 200):
+            probe = dict({"x": 0, "y": 0, "x_velocity": x, "y_velocity": y})
+            if will_cross_area(probe):
+                count += 1
+    return count
+
+
+print(part_2())
