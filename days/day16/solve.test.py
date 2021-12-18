@@ -36,6 +36,16 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(operator["packets"][0]["decimal"], 10)
         self.assertEqual(operator["packets"][1]["decimal"], 20)
 
+    def test_operator_packets_1(self):
+        [operator] = parse("EE00D40C823060")
+        self.assertEqual(len(operator["packets"]), 3)
+
+    def test_operator_packets_subpackets_1(self):
+        [operator] = parse("EE00D40C823060")
+        self.assertEqual(operator["packets"][0]["decimal"], 1)
+        self.assertEqual(operator["packets"][1]["decimal"], 2)
+        self.assertEqual(operator["packets"][2]["decimal"], 3)
+
 
 if __name__ == '__main__':
     unittest.main()
