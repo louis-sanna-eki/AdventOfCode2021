@@ -26,7 +26,12 @@ def parse_number(raw_number):
         })
     return int(raw_number)
 
+# Helper function for testing
 
-[line] = lines
 
-print(parse_number(line))
+def number_to_string(number):
+    if isinstance(number, int):
+        return str(number)
+    result = "[" + number_to_string(number["left"]) + \
+        "," + number_to_string(number["right"]) + "]"
+    return result
