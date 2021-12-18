@@ -17,7 +17,6 @@ class TestDay18Methods(unittest.TestCase):
         number = parse_number(
             "[[[[[9,8],1],2],3],4]")
         number_to_explode = find_number_to_explode(number)
-        print("number_to_explode", number_to_explode)
         self.assertEqual(number_to_explode["left"]["value"], 9)
         self.assertEqual(number_to_explode["right"]["value"], 8)
 
