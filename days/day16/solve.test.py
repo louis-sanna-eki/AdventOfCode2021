@@ -1,5 +1,5 @@
 import unittest
-from solve import parse
+from solve import parse, compute_packet_version_sum
 
 
 class TestStringMethods(unittest.TestCase):
@@ -45,6 +45,21 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(operator["packets"][0]["decimal"], 1)
         self.assertEqual(operator["packets"][1]["decimal"], 2)
         self.assertEqual(operator["packets"][2]["decimal"], 3)
+
+    def test_packet_version_sum_0(self):
+        self.assertEqual(compute_packet_version_sum("8A004A801A8002F478"), 16)
+
+    def test_packet_version_sum_1(self):
+        self.assertEqual(compute_packet_version_sum(
+            "620080001611562C8802118E34"), 12)
+
+    def test_packet_version_sum_2(self):
+        self.assertEqual(compute_packet_version_sum(
+            "C0015000016115A2E0802F182340"), 23)
+
+    def test_packet_version_sum_3(self):
+        self.assertEqual(compute_packet_version_sum(
+            "A0016C880162017C3686B18A3D4780"), 31)
 
 
 if __name__ == '__main__':

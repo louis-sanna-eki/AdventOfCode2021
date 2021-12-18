@@ -1,6 +1,6 @@
 import math
 
-file = open('days/day15/input.txt', 'r')
+file = open('days/day16/input.txt', 'r')
 raw_transmission = file.read()
 file.close()
 
@@ -41,7 +41,7 @@ def parse_first_operator(transmission, _type, version):
     length_type = transmission[index]
     index += 1
     packets = []
-    length = index
+    length = 0
     if length_type == "0":
         sub_packets_length = int(transmission[index:index+15], 2)
         index += 15
@@ -51,9 +51,9 @@ def parse_first_operator(transmission, _type, version):
         sub_packets_count = int(transmission[index:index+11], 2)
         index += 11
         packets = parse_binary(transmission[index:], sub_packets_count)
+        length = index + sum(packet["length"] for packet in packets)
     else:
         raise NotImplementedError
-    length = VERSION_HEADER_LENGTH+TYPE_HEADER_LENGTH
     return {
         "_type": _type,
         "length": length,
@@ -90,8 +90,27 @@ def parse_binary(binary, max_packet=math.inf):
     return result
 
 
+def sum_version(packet):
+    result = 0
+    result += packet["version"]
+    if "packets" in packet:
+        result += sum(sum_version(sub_packet)
+                      for sub_packet in packet["packets"])
+    return result
+
+
 def parse(raw_transmission):
     binaries = list(map(parse_hex, raw_transmission))
     binary = ''.join(binaries)
     # at max on packet as the outermost layer
     return parse_binary(binary, max_packet=1)
+
+
+def compute_packet_version_sum(raw_transmission):
+    [packet] = parse(raw_transmission)
+    return sum_version(packet)
+
+
+result = compute_packet_version_sum(raw_transmission)
+
+print(result)
