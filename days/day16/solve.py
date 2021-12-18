@@ -46,7 +46,7 @@ def parse_first_operator(transmission, _type, version):
         sub_packets_length = int(transmission[index:index+15], 2)
         index += 15
         packets = parse_binary(transmission[index:index+sub_packets_length])
-        length += sub_packets_length
+        length = index + sub_packets_length
     elif length_type == "1":
         sub_packets_count = int(transmission[index:index+11], 2)
         index += 11
@@ -78,7 +78,6 @@ def parse_binary(binary, max_packet=math.inf):
     result = []
     index = 0
     packet_count = 0
-    _type = None
     while True:
         if index >= len(binary):
             break
@@ -87,16 +86,12 @@ def parse_binary(binary, max_packet=math.inf):
         first_packet = parse_first_packet(binary[index:])
         result.append(first_packet)
         packet_count += 1
-        _type = first_packet["_type"]
-        if _type != 4:  # operator
-            break
         index += first_packet["length"]
-        if len(binary) - index <= 6:
-            break
     return result
 
 
 def parse(raw_transmission):
     binaries = list(map(parse_hex, raw_transmission))
     binary = ''.join(binaries)
-    return parse_binary(binary)
+    # at max on packet as the outermost layer
+    return parse_binary(binary, max_packet=1)
