@@ -1,6 +1,17 @@
+import math
+
 file = open('days/day18/input.txt', 'r')
 lines = file.read().splitlines()
 file.close()
+
+
+def build_natural_number(value, parent):
+    return dict({
+        "parent": parent,
+        "left": None,
+        "right": None,
+        "value": value
+    })
 
 
 def parse_number(raw_number, parent=None):
@@ -29,12 +40,7 @@ def parse_number(raw_number, parent=None):
         number["left"] = parse_number(raw_left, number)
         number["right"] = parse_number(raw_right, number)
         return number
-    return dict({
-        "parent": parent,
-        "left": None,
-        "right": None,
-        "value": int(raw_number)
-    })
+    return build_natural_number(int(raw_number), parent)
 
 
 def number_to_string(number):  # helper function for testing
@@ -89,6 +95,18 @@ def find_number_to_explode(number):
     return find_with_left_dfs(number, should_explode)
 
 
+def should_split(node, level):
+    if node is None:
+        return False
+    if node["value"] is None:
+        return False
+    return node["value"] >= 10
+
+
+def find_number_to_split(number):
+    return find_with_left_dfs(number, should_split)
+
+
 def is_left(node):
     return node["parent"]["left"] is node
 
@@ -133,10 +151,22 @@ def explode(number):
     number["value"] = 0
 
 
+def split(number):
+    value = number["value"]
+    number["left"] = build_natural_number(math.floor(value/2), number)
+    number["right"] = build_natural_number(math.ceil(value/2), number)
+    number["value"] = None
+
+
 def reduce(number):
     while True:
         number_to_explode = find_number_to_explode(number)
-        if number_to_explode is None:
-            break
-        explode(number_to_explode)
+        if number_to_explode is not None:
+            explode(number_to_explode)
+            continue
+        number_to_split = find_number_to_split(number)
+        if number_to_split is not None:
+            split(number_to_split)
+            continue
+        break
     return number

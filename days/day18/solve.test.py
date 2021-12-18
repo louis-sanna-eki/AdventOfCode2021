@@ -45,6 +45,13 @@ class TestDay18Methods(unittest.TestCase):
         self.assertEqual(number_to_string(number),
                          "[[3,[2,[8,0]]],[9,[5,[7,0]]]]")
 
+    def test_explode_and_split(self):
+        number_to_reduce = parse_number(
+            "[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]")
+        number = reduce(number_to_reduce)
+        self.assertEqual(number_to_string(number),
+                         "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]")
+
 
 if __name__ == '__main__':
     unittest.main()
