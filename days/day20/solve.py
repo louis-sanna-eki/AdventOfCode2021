@@ -50,7 +50,7 @@ def compute_number(image, y, x, default):
     return int(result)
 
 
-def enhance(image, default):
+def enhance(image, default="."):
     result = [[0] * len(image) for _ in range(len(image))]
     for y in range(len(image)):
         for x in range(len(image[y])):
@@ -73,14 +73,14 @@ def count_lights(image):
     return count
 
 
-def part_1():
+def part_2():
     image = pad(pad(pad(pad(pad(raw_image)))))
-    enhanced_image = enhance(image, ".")
-    padded_enhanced = pad(enhanced_image, enhanced_image[0][0])
-    second_enhanced = enhance(padded_enhanced, enhanced_image[0][0])
-    print_image(second_enhanced)
-    result = count_lights(second_enhanced)
+    enhanced_image = enhance(image)
+    for _ in range(1, 50):
+        padded_enhanced = pad(enhanced_image, enhanced_image[0][0])
+        enhanced_image = enhance(padded_enhanced, enhanced_image[0][0])
+    result = count_lights(enhanced_image)
     print(result)
 
 
-part_1()
+part_2()
