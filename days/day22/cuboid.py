@@ -25,7 +25,7 @@ class Cuboid:
                 result.append(Cuboid(new_cuboid_coordinates))
             if (self_max > to_remove_max):
                 new_cuboid_coordinates = self.coordinates[0:index] + [[
-                    to_remove_max+1, max]] + self.coordinates[index+1:DIMENSIONS_COUNT]
+                    to_remove_max+1, self_max]] + self.coordinates[index+1:DIMENSIONS_COUNT]
                 result.append(Cuboid(new_cuboid_coordinates))
             if (self_max > to_remove_max) or (self_min < to_remove_min):
                 remaining_cuboid_coordinates = self.coordinates[0:index] + [[
