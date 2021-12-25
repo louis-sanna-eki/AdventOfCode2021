@@ -6,7 +6,7 @@ class Cuboid:
     def __init__(self, coordinates: list):
         self.coordinates = coordinates
 
-    def intersects(self, cuboid):
+    def intersects(self, cuboid) -> bool:
         for index, (min, max) in enumerate(self.coordinates):
             (to_remove_min, to_remove_max) = cuboid.coordinates[index]
             if max < to_remove_min:
@@ -15,7 +15,8 @@ class Cuboid:
                 return False
         return True
 
-    def remove(self, cuboid):  # return remaining space as cuboid
+    # return remaining space as cuboid
+    def remove(self, cuboid) -> list:
         result = []
         for index, [self_min, self_max] in enumerate(self.coordinates):
             (to_remove_min, to_remove_max) = cuboid.coordinates[index]
@@ -33,10 +34,9 @@ class Cuboid:
                 remaining_cuboid = Cuboid(remaining_cuboid_coordinates)
                 result.extend(remaining_cuboid.remove(cuboid))
                 break
-
         return result
 
-    def volume(self):
+    def volume(self) -> int:
         result = 1
         for [self_min, self_max] in self.coordinates:
             result *= self_max - self_min + 1
