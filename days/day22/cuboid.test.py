@@ -57,6 +57,11 @@ class TestCuboid(unittest.TestCase):
         self.assertEqual(result[1].coordinates, [[1, 1], [0, 0], [0, 1]])
         self.assertEqual(result[2].coordinates, [[1, 1], [1, 1], [0, 0]])
 
+    def test_volume(self):
+        cuboid = Cuboid([[0, 0], [0, 1], [0, 2]])
+        volume = cuboid.volume()
+        self.assertEqual(volume, 6)
+
 
 if __name__ == '__main__':
     unittest.main()

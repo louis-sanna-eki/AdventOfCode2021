@@ -17,7 +17,7 @@ class Cuboid:
 
     def remove(self, cuboid):  # return remaining space as cuboid
         result = []
-        for index, (self_min, self_max) in enumerate(self.coordinates):
+        for index, [self_min, self_max] in enumerate(self.coordinates):
             (to_remove_min, to_remove_max) = cuboid.coordinates[index]
             if (self_min < to_remove_min):
                 new_cuboid_coordinates = self.coordinates[0:index] + [[
@@ -34,4 +34,10 @@ class Cuboid:
                 result.extend(remaining_cuboid.remove(cuboid))
                 break
 
+        return result
+
+    def volume(self):
+        result = 1
+        for [self_min, self_max] in self.coordinates:
+            result *= self_max - self_min + 1
         return result
