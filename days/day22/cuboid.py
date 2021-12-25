@@ -20,12 +20,12 @@ class Cuboid:
         for index, (min, max) in enumerate(self.coordinates):
             (to_remove_min, to_remove_max) = cuboid.coordinates[index]
             if (min < to_remove_min):
-                new_cuboid_coordinates = self.coordinates[0:index] + [(
-                    min, to_remove_min - 1)] + self.coordinates[index+1:DIMENSIONS_COUNT]
+                new_cuboid_coordinates = self.coordinates[0:index] + [[
+                    min, to_remove_min - 1]] + self.coordinates[index+1:DIMENSIONS_COUNT]
                 result.append(Cuboid(new_cuboid_coordinates))
             if (max > to_remove_max):
-                new_cuboid_coordinates = self.coordinates[0:index] + [(
-                    to_remove_max+1, max)] + self.coordinates[index+1:DIMENSIONS_COUNT]
+                new_cuboid_coordinates = self.coordinates[0:index] + [[
+                    to_remove_max+1, max]] + self.coordinates[index+1:DIMENSIONS_COUNT]
                 result.append(Cuboid(new_cuboid_coordinates))
 
         return result
