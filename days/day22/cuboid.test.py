@@ -44,6 +44,12 @@ class TestCuboid(unittest.TestCase):
         result = cuboid.remove(Cuboid([[0, 0], [0, 0], [0, 0]]))
         self.assertEqual(result[0].coordinates, [[0, 0], [1, 1], [0, 0]])
 
+    def test_remove_x_y_top(self):
+        cuboid = Cuboid([[0, 1], [0, 1], [0, 0]])
+        result = cuboid.remove(Cuboid([[1, 1], [1, 1], [0, 0]]))
+        self.assertEqual(result[0].coordinates, [[0, 0], [0, 1], [0, 0]])
+        self.assertEqual(result[1].coordinates, [[1, 1], [0, 0], [0, 0]])
+
 
 if __name__ == '__main__':
     unittest.main()
