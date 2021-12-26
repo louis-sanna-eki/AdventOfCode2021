@@ -1,4 +1,5 @@
 from copy import deepcopy
+from functools import lru_cache
 
 HALLWAY_LENGTH = 11
 ROOM_LENGTH = 2
@@ -11,8 +12,8 @@ room_index_by_letter = {letter: room_index for room_index,
                         letter in letter_by_room_index.items()}
 
 
-def find_neighbors(hallway, rooms) -> list():
-
+@lru_cache(maxsize=None)
+def find_neighbors(hallway: tuple, rooms: tuple) -> list():
     def is_room_free(room_index) -> bool:
         room = rooms[room_index]
         for spot in room:
@@ -32,18 +33,20 @@ def find_neighbors(hallway, rooms) -> list():
 
     def move_to_room(hallway_x):
         letter = hallway[hallway_x]
-        new_hallway = hallway.copy()
-        new_hallway[hallway_x] = "."
-        new_rooms = deepcopy(rooms)
+        new_hallway = hallway[0:hallway_x] + tuple(".") + hallway[hallway_x+1:]
         final_room_x = x_by_letter[letter]
         new_energy = 0
         new_energy += abs(final_room_x - hallway_x)
         final_room_index = room_index_by_letter[letter]
+        new_room = None
         for room_y in range(0, ROOM_LENGTH):
-            if new_rooms[final_room_index][room_y] == ".":
-                new_rooms[final_room_index][room_y] = letter
+            if rooms[final_room_index][room_y] == ".":
+                new_room = rooms[final_room_index][0:room_y] + \
+                    tuple(letter) + rooms[final_room_index][room_y+1:]
                 new_energy += ROOM_LENGTH - room_y
                 break
+        new_rooms = (*rooms[0:final_room_index], new_room,
+                     *rooms[final_room_index+1:])
         return new_hallway, new_rooms, new_energy
 
     result = list()
