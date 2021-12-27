@@ -3,6 +3,8 @@ import unittest
 from solve import find_neighbors
 
 HALLWAY_LENGTH = 11
+ROOM_COUNT = 4
+FREE_SPOT_COUNT = 11 - 4
 
 
 class TestSolve(unittest.TestCase):
@@ -71,12 +73,24 @@ class TestSolve(unittest.TestCase):
     def test_leaving_room(self):
         neighbors = find_neighbors((".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."), (
             ("B", "B"), ("A", "A"), ("C", "C"), ("D", "D")))
-        self.assertEqual(len(neighbors), 14)
+        self.assertEqual(len(neighbors), FREE_SPOT_COUNT + FREE_SPOT_COUNT)
         self.assertEqual(neighbors[0][0], ("B", ".", ".",
                          ".", ".", ".", ".", ".", ".", ".", "."))
         self.assertEqual(neighbors[0][1], (("B", "."), (
             "A", "A"), ("C", "C"), ("D", "D")))
         self.assertEqual(neighbors[0][2], 30)
+
+    def test_leaving_room(self):
+        neighbors = find_neighbors(("A", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."), (
+            ("B", "B"), ("A", "."), ("C", "C"), ("D", "D")))
+        for neighbor in neighbors:
+            print(neighbor[0])
+        self.assertEqual(len(neighbors), 2 * (FREE_SPOT_COUNT - 1))
+        self.assertEqual(neighbors[0][0], ("A", "B", ".",
+                         ".", ".", ".", ".", ".", ".", ".", "."))
+        self.assertEqual(neighbors[0][1], (("B", "."), (
+            "A", "."), ("C", "C"), ("D", "D")))
+        self.assertEqual(neighbors[0][2], 20)
 
 
 if __name__ == '__main__':

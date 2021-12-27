@@ -101,7 +101,13 @@ def find_neighbors(hallway: tuple, rooms: tuple) -> list():
             tuple('.') + room[first_letter_y+1:]
         new_rooms = (*rooms[0:room_index], new_room,
                      *rooms[room_index+1:])
-        return new_hallway, new_rooms, 0
+        new_energy = 0
+        original_hallway_x = hallway_x_by_room_index[room_index]
+        new_energy += abs(original_hallway_x - hallway_x) * \
+            energy_per_step_per_letter[letter]
+        new_energy += (ROOM_LENGTH - first_letter_y) * \
+            energy_per_step_per_letter[letter]
+        return new_hallway, new_rooms, new_energy
 
     def move_to_hallway(room_index) -> list:
         result = list()
