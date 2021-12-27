@@ -80,13 +80,6 @@ def find_neighbors(hallway: tuple, rooms: tuple) -> list():
             result.append(move_to_room(hallway_x))
         return result
 
-    def is_room_won(room_index) -> bool:
-        room = rooms[room_index]
-        for spot in room:
-            if spot != letter_by_room_index[room_index]:
-                return False
-        return True
-
     def find_first_letter_y(room_index) -> int:
         room = rooms[room_index]
         for y in range(ROOM_LENGTH - 1, -1, -1):
