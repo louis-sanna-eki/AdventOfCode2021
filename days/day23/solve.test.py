@@ -28,7 +28,7 @@ class TestSolve(unittest.TestCase):
                          ".", ".", ".", ".", ".", ".", ".", "."))
         self.assertEqual(neighbors[0][1], (("A", "A"), (
             "B", "B"), ("C", "C"), ("D", "D")))
-        self.assertEqual(neighbors[0][2], 3)
+        self.assertEqual(neighbors[0][2], 3000)
 
 
 if __name__ == '__main__':

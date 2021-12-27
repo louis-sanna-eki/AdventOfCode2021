@@ -1,4 +1,3 @@
-from copy import deepcopy
 from functools import lru_cache
 
 HALLWAY_LENGTH = 11
@@ -6,6 +5,7 @@ ROOM_LENGTH = 2
 
 target_x_by_letter = {"A": 2, "B": 4, "C": 6, "D": 8}
 
+energy_per_step_per_letter = {"A": 1, "B": 10, "C": 100, "D": 1000}
 
 letter_by_room_index = {0: "A", 1: "B", 2: "C", 3: "D"}
 room_index_by_letter = {letter: room_index for room_index,
@@ -41,14 +41,15 @@ def find_neighbors(hallway: tuple, rooms: tuple) -> list():
         new_hallway = hallway[0:hallway_x] + tuple(".") + hallway[hallway_x+1:]
         final_room_x = target_x_by_letter[letter]
         new_energy = 0
-        new_energy += abs(final_room_x - hallway_x)
+        new_energy += abs(final_room_x - hallway_x) * energy_per_step_per_letter[letter]
         final_room_index = room_index_by_letter[letter]
         new_room = None
         for room_y in range(0, ROOM_LENGTH):
             if rooms[final_room_index][room_y] == ".":
                 new_room = rooms[final_room_index][0:room_y] + \
                     tuple(letter) + rooms[final_room_index][room_y+1:]
-                new_energy += ROOM_LENGTH - room_y
+                new_energy += (ROOM_LENGTH - room_y) * \
+                    energy_per_step_per_letter[letter]
                 break
         new_rooms = (*rooms[0:final_room_index], new_room,
                      *rooms[final_room_index+1:])
