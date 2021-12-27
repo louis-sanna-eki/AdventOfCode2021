@@ -167,8 +167,8 @@ def visit(hallway, rooms):
 
 def part1():
     starting_hallway = tuple(".") * HALLWAY_LENGTH
-    starting_rooms = (("A", "B"), ("D", "C"), ("C", "B"), ("A", "D"))  # sample
-    # starting_rooms = (("D", "D"), ("A", "B"), ("B", "C"), ("A", "C"))
+    # starting_rooms = (("A", "B"), ("D", "C"), ("C", "B"), ("A", "D"))  # sample
+    starting_rooms = (("D", "D"), ("A", "B"), ("B", "C"), ("A", "C"))
     energy_by_diagram[(starting_hallway, starting_rooms)] = 0
     visit(starting_hallway, starting_rooms)
     while not diagrams.empty():
