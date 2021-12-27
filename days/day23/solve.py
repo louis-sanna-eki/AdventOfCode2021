@@ -55,15 +55,20 @@ def find_neighbors(hallway: tuple, rooms: tuple) -> list():
                      *rooms[final_room_index+1:])
         return new_hallway, new_rooms, new_energy
 
+    def move_to_room_neighbors():
+        result = list()
+        for hallway_x, char in enumerate(hallway):
+            if char == ".":
+                continue
+            letter = char
+            target_room_index = room_index_by_letter[letter]
+            if is_room_free(target_room_index) is False:
+                continue
+            if is_path_free(hallway_x) is False:
+                continue
+            result.append(move_to_room(hallway_x))
+        return result
+
     result = list()
-    for hallway_x, char in enumerate(hallway):
-        if char == ".":
-            continue
-        letter = char
-        target_room_index = room_index_by_letter[letter]
-        if is_room_free(target_room_index) is False:
-            continue
-        if is_path_free(hallway_x) is False:
-            continue
-        result.append(move_to_room(hallway_x))
+    result.extend(move_to_room_neighbors())
     return result
