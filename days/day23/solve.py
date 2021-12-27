@@ -1,4 +1,5 @@
 from functools import lru_cache
+from queue import PriorityQueue
 import math
 
 HALLWAY_LENGTH = 11
@@ -142,34 +143,39 @@ def is_winning_state(rooms):
     return True
 
 
+visited_by_diagram = dict()
+energy_by_diagram = dict()
+min_energy = math.inf
+diagrams = PriorityQueue()
+
+
+def visit(hallway, rooms):
+    if (hallway, rooms) in visited_by_diagram:
+        return
+    current_path_energy = energy_by_diagram[(hallway, rooms)]
+    neighbors = find_neighbors(hallway, rooms)
+    for (n_hallway, n_rooms, n_energy) in neighbors:
+        current_lowest_energy = energy_by_diagram[(n_hallway, n_rooms)] if (
+            n_hallway, n_rooms) in energy_by_diagram else math.inf
+        n_current_path_energy = current_path_energy + n_energy
+        if n_current_path_energy <= current_lowest_energy:
+            energy_by_diagram[(n_hallway, n_rooms)] = n_current_path_energy
+            n_tuple = tuple((n_hallway, n_rooms))
+            diagrams.put(tuple((n_current_path_energy, n_tuple)))
+    visited_by_diagram[(hallway, rooms)] = True
+
+
 def part1():
     starting_hallway = tuple(".") * HALLWAY_LENGTH
-    starting_rooms = (("A", "B"), ("D", "C"), ("C", "B"), ("A", "D"))
-    starting_energy = 0
-    min_energy = math.inf
-    diagrams = list()
-    diagrams.append(tuple((starting_hallway, starting_rooms, starting_energy)))
-    loop_count = 0
-    while True:
-        loop_count += 1
-        print("loop_count", loop_count, len(diagrams))
-        if loop_count > 30:
-            break
-        new_diagrams = list()
-        if len(diagrams) == 0:
-            break
-        for (hallway, rooms, energy) in diagrams:
-            neighbors = find_neighbors(hallway, rooms)
-            for (n_hallway, n_rooms, n_energy) in neighbors:
-                n_energy += energy
-                if is_winning_state(n_rooms):
-                    if n_energy < min_energy:
-                        print(n_energy)
-                        min_energy = n_energy
-                        continue
-                new_diagrams.append(tuple((n_hallway, n_rooms, n_energy)))
-        diagrams = new_diagrams
-    print(min_energy)
+    starting_rooms = (("A", "B"), ("D", "C"), ("C", "B"), ("A", "D"))  # sample
+    # starting_rooms = (("D", "D"), ("A", "B"), ("B", "C"), ("A", "C"))
+    energy_by_diagram[(starting_hallway, starting_rooms)] = 0
+    visit(starting_hallway, starting_rooms)
+    while not diagrams.empty():
+        priority, (hallway, rooms) = diagrams.get()
+        visit(hallway, rooms)
+    print(energy_by_diagram[(starting_hallway,
+          (("A", "A"), ("B", "B"), ("C", "C"), ("D", "D")))])
 
 
 part1()
