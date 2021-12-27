@@ -4,7 +4,7 @@ from functools import lru_cache
 HALLWAY_LENGTH = 11
 ROOM_LENGTH = 2
 
-x_by_letter = {"A": 2, "B": 3, "C": 4, "D": 5}
+target_x_by_letter = {"A": 2, "B": 4, "C": 6, "D": 8}
 
 
 letter_by_room_index = {0: "A", 1: "B", 2: "C", 3: "D"}
@@ -25,16 +25,21 @@ def find_neighbors(hallway: tuple, rooms: tuple) -> list():
 
     def is_path_free(hallway_x):
         letter = hallway[hallway_x]
-        final_room_index = room_index_by_letter[letter]
-        for hallway_x in range(hallway_x + 1, final_room_index, 1 if final_room_index > hallway_x else -1):
-            if hallway[hallway_x] != ".":
-                return False
+        target_x = target_x_by_letter[letter]
+        if target_x > hallway_x:
+            for hallway_path_x in range(hallway_x + 1, target_x + 1):
+                if hallway[hallway_path_x] != ".":
+                    return False
+        if target_x < hallway_x:
+            for hallway_path_x in range(target_x, hallway_x):
+                if hallway[hallway_path_x] != ".":
+                    return False
         return True
 
     def move_to_room(hallway_x):
         letter = hallway[hallway_x]
         new_hallway = hallway[0:hallway_x] + tuple(".") + hallway[hallway_x+1:]
-        final_room_x = x_by_letter[letter]
+        final_room_x = target_x_by_letter[letter]
         new_energy = 0
         new_energy += abs(final_room_x - hallway_x)
         final_room_index = room_index_by_letter[letter]
@@ -54,8 +59,8 @@ def find_neighbors(hallway: tuple, rooms: tuple) -> list():
         if char == ".":
             continue
         letter = char
-        final_room_index = room_index_by_letter[letter]
-        if is_room_free(final_room_index) is False:
+        target_room_index = room_index_by_letter[letter]
+        if is_room_free(target_room_index) is False:
             continue
         if is_path_free(hallway_x) is False:
             continue
