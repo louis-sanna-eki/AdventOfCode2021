@@ -4,6 +4,8 @@ HALLWAY_LENGTH = 11
 ROOM_LENGTH = 2
 
 target_x_by_letter = {"A": 2, "B": 4, "C": 6, "D": 8}
+target_xs = [target_x for letter, target_x in target_x_by_letter.items()]
+hallway_x_by_room_index = {0: 2, 1: 4, 2: 6, 3: 8}
 
 energy_per_step_per_letter = {"A": 1, "B": 10, "C": 100, "D": 1000}
 
@@ -23,18 +25,25 @@ def find_neighbors(hallway: tuple, rooms: tuple) -> list():
                 return False
         return True
 
-    def is_path_free(hallway_x):
-        letter = hallway[hallway_x]
-        target_x = target_x_by_letter[letter]
-        if target_x > hallway_x:
-            for hallway_path_x in range(hallway_x + 1, target_x + 1):
+    def is_path_free(start_x, end_x) -> bool:
+        if end_x > start_x:
+            for hallway_path_x in range(start_x + 1, end_x + 1):
                 if hallway[hallway_path_x] != ".":
                     return False
-        if target_x < hallway_x:
-            for hallway_path_x in range(target_x, hallway_x):
+        if end_x < start_x:
+            for hallway_path_x in range(end_x, start_x):
                 if hallway[hallway_path_x] != ".":
                     return False
         return True
+
+    def is_path_free_to_room(hallway_x) -> bool:
+        letter = hallway[hallway_x]
+        target_x = target_x_by_letter[letter]
+        return is_path_free(hallway_x, target_x)
+
+    def is_path_free_to_hallway(room_index, hallway_x) -> bool:
+        room_hallway_x = hallway_x_by_room_index[room_index]
+        return is_path_free(room_hallway_x, hallway_x)
 
     def move_to_room(hallway_x):
         letter = hallway[hallway_x]
@@ -55,7 +64,7 @@ def find_neighbors(hallway: tuple, rooms: tuple) -> list():
                      *rooms[final_room_index+1:])
         return new_hallway, new_rooms, new_energy
 
-    def move_to_room_neighbors():
+    def move_to_room_neighbors() -> list:
         result = list()
         for hallway_x, char in enumerate(hallway):
             if char == ".":
@@ -64,11 +73,55 @@ def find_neighbors(hallway: tuple, rooms: tuple) -> list():
             target_room_index = room_index_by_letter[letter]
             if is_room_free(target_room_index) is False:
                 continue
-            if is_path_free(hallway_x) is False:
+            if is_path_free_to_room(hallway_x) is False:
                 continue
             result.append(move_to_room(hallway_x))
         return result
 
+    def is_room_won(room_index) -> bool:
+        room = rooms[room_index]
+        for spot in room:
+            if spot != letter_by_room_index[room_index]:
+                return False
+        return True
+
+    def find_first_letter_y(room_index) -> int:
+        room = rooms[room_index]
+        for y in range(ROOM_LENGTH - 1, -1, -1):
+            if room[y] != ".":
+                return y
+        raise Exception('No letter found in this room')
+
+    def move_to_hallway_step(room_index, hallway_x):
+        first_letter_y = find_first_letter_y(room_index)
+        room = rooms[room_index]
+        letter = room[first_letter_y]
+        new_hallway = hallway[0:hallway_x] + tuple(letter) + hallway[hallway_x+1:]
+        new_room = room[0:first_letter_y] + \
+            tuple('.') + room[first_letter_y+1:]
+        new_rooms = (*rooms[0:room_index], new_room,
+                     *rooms[room_index+1:])
+        return new_hallway, new_rooms, 0
+
+    def move_to_hallway(room_index) -> list:
+        result = list()
+        for hallway_x, char in enumerate(hallway):
+            if hallway_x in target_xs:  # amphipod cannot stop in front of a room
+                continue
+            if is_path_free_to_hallway(room_index, hallway_x) is False:
+                continue
+            result.append(move_to_hallway_step(room_index, hallway_x))
+        return result
+
+    def move_to_hallway_neighbors() -> list:
+        result = list()
+        for room_index, room in enumerate(rooms):
+            if is_room_free(room_index):
+                continue
+            result.extend(move_to_hallway(room_index))
+        return result
+
     result = list()
     result.extend(move_to_room_neighbors())
+    result.extend(move_to_hallway_neighbors())
     return result

@@ -68,6 +68,16 @@ class TestSolve(unittest.TestCase):
             "B", "B"), ("C", "C"), ("D", ".")))
         self.assertEqual(neighbors[0][2], 8)
 
+    def test_leaving_room(self):
+        neighbors = find_neighbors((".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."), (
+            ("B", "B"), ("A", "A"), ("C", "C"), ("D", "D")))
+        self.assertEqual(len(neighbors), 14)
+        self.assertEqual(neighbors[0][0], ("B", ".", ".",
+                         ".", ".", ".", ".", ".", ".", ".", "."))
+        self.assertEqual(neighbors[0][1], (("B", "."), (
+            "A", "A"), ("C", "C"), ("D", "D")))
+        self.assertEqual(neighbors[0][2], 30)
+
 
 if __name__ == '__main__':
     unittest.main()
