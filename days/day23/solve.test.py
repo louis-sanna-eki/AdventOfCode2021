@@ -83,14 +83,32 @@ class TestSolve(unittest.TestCase):
     def test_leaving_room(self):
         neighbors = find_neighbors(("A", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."), (
             ("B", "B"), ("A", "."), ("C", "C"), ("D", "D")))
-        for neighbor in neighbors:
-            print(neighbor[0])
         self.assertEqual(len(neighbors), 2 * (FREE_SPOT_COUNT - 1))
         self.assertEqual(neighbors[0][0], ("A", "B", ".",
                          ".", ".", ".", ".", ".", ".", ".", "."))
         self.assertEqual(neighbors[0][1], (("B", "."), (
             "A", "."), ("C", "C"), ("D", "D")))
         self.assertEqual(neighbors[0][2], 20)
+
+    def test_leaving_room_with_block(self):
+        neighbors = find_neighbors((".", ".", ".", ".", ".", "A", ".", ".", ".", ".", "."), (
+            ("B", "B"), ("A", "."), ("C", "C"), ("D", "D")))
+        self.assertEqual(len(neighbors), 6)
+        self.assertEqual(neighbors[0][0], ("B", ".", ".",
+                         ".", ".", "A", ".", ".", ".", ".", "."))
+        self.assertEqual(neighbors[0][1], (("B", "."), (
+            "A", "."), ("C", "C"), ("D", "D")))
+        self.assertEqual(neighbors[0][2], 30)
+
+    def test_leaving_room_with_block_right(self):
+        neighbors = find_neighbors((".", ".", ".", ".", ".", "D", ".", ".", ".", ".", "."), (
+            ("A", "A"), ("B", "B"), ("D", "."), ("C", "C")))
+        self.assertEqual(len(neighbors), 6)
+        self.assertEqual(neighbors[0][0], (".", ".", ".",
+                         ".", ".", "D", ".", "D", ".", ".", "."))
+        self.assertEqual(neighbors[0][1], (("A", "A"), (
+            "B", "B"), (".", "."), ("C", "C")))
+        self.assertEqual(neighbors[0][2], 3000)
 
 
 if __name__ == '__main__':
