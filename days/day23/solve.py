@@ -1,4 +1,5 @@
 from functools import lru_cache
+import math
 
 HALLWAY_LENGTH = 11
 ROOM_LENGTH = 2
@@ -131,3 +132,44 @@ def find_neighbors(hallway: tuple, rooms: tuple) -> list():
     result.extend(move_to_room_neighbors())
     result.extend(move_to_hallway_neighbors())
     return result
+
+
+def is_winning_state(rooms):
+    for room_index, room in enumerate(rooms):
+        for spot in room:
+            if spot != letter_by_room_index[room_index]:
+                return False
+    return True
+
+
+def part1():
+    starting_hallway = tuple(".") * HALLWAY_LENGTH
+    starting_rooms = (("A", "B"), ("D", "C"), ("C", "B"), ("A", "D"))
+    starting_energy = 0
+    min_energy = math.inf
+    diagrams = list()
+    diagrams.append(tuple((starting_hallway, starting_rooms, starting_energy)))
+    loop_count = 0
+    while True:
+        loop_count += 1
+        print("loop_count", loop_count, len(diagrams))
+        if loop_count > 30:
+            break
+        new_diagrams = list()
+        if len(diagrams) == 0:
+            break
+        for (hallway, rooms, energy) in diagrams:
+            neighbors = find_neighbors(hallway, rooms)
+            for (n_hallway, n_rooms, n_energy) in neighbors:
+                n_energy += energy
+                if is_winning_state(n_rooms):
+                    if n_energy < min_energy:
+                        print(n_energy)
+                        min_energy = n_energy
+                        continue
+                new_diagrams.append(tuple((n_hallway, n_rooms, n_energy)))
+        diagrams = new_diagrams
+    print(min_energy)
+
+
+part1()
