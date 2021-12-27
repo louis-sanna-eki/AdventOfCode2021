@@ -3,7 +3,7 @@ from queue import PriorityQueue
 import math
 
 HALLWAY_LENGTH = 11
-ROOM_LENGTH = 2
+ROOM_LENGTH = 4
 
 target_x_by_letter = {"A": 2, "B": 4, "C": 6, "D": 8}
 target_xs = [target_x for letter, target_x in target_x_by_letter.items()]
@@ -168,14 +168,16 @@ def visit(hallway, rooms):
 def part1():
     starting_hallway = tuple(".") * HALLWAY_LENGTH
     # starting_rooms = (("A", "B"), ("D", "C"), ("C", "B"), ("A", "D"))  # sample
-    starting_rooms = (("D", "D"), ("A", "B"), ("B", "C"), ("A", "C"))
+    # starting_rooms = (("D", "D"), ("A", "B"), ("B", "C"), ("A", "C")) # part1
+    starting_rooms = (("D", "D", "D", "D"), ("A", "B", "C", "B"),
+                      ("B", "A", "B", "C"), ("A", "C", "A", "C"))
     energy_by_diagram[(starting_hallway, starting_rooms)] = 0
     visit(starting_hallway, starting_rooms)
     while not diagrams.empty():
         priority, (hallway, rooms) = diagrams.get()
         visit(hallway, rooms)
     print(energy_by_diagram[(starting_hallway,
-          (("A", "A"), ("B", "B"), ("C", "C"), ("D", "D")))])
+          (("A", "A", "A", "A"), ("B", "B", "B", "B"), ("C", "C", "C", "C"), ("D", "D", "D", "D")))])
 
 
 part1()
