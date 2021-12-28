@@ -39,7 +39,7 @@ z += y  # z = z
 if (w == z % 26 + 12):
     z = z
 else:
-    z = 26
+    z = 26  # looks false...
 
 ################## python translation of second sequence########################
 
