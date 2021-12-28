@@ -84,3 +84,25 @@ if z % 26 + q != w:  # x = 1 # z = z / p
     y = w + r
     # add z y
     z = 26 * (z/p) + w + r
+
+if z % 26 + q == w:  # x = 0 # z = z/p
+    # mul y 0
+    # add y 25
+    # mul y x
+    # add y 1
+    # mul z y
+    z = z  # = z/p
+    # mul y 0
+    # add y w
+    # add y r
+    # mul y x
+    y = 0
+    # add z y
+    z = z/p
+
+# Final conversion
+
+if z % 26 + q == w:
+    z = z/p
+else:
+    z = 26 * (z/p) + w + r
