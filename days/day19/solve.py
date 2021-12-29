@@ -135,4 +135,16 @@ def debug():
         print((x, y, z), transformation((_x, _y, _z)))
 
 
-debug()
+def part1():
+    transformation_by_scanner_index = find_transformations_by_scanner_index(scanners)
+    grid = dict()
+    for scanner_index, scanner in enumerate(scanners):
+        transformation = transformation_by_scanner_index[scanner_index]
+        for point in scanner:
+            transformed_point = transformation(point)
+            grid[transformed_point] = True
+    result = len(grid)
+    print(result)
+
+
+part1()
