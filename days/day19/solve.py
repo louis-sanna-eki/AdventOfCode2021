@@ -101,9 +101,34 @@ def find_transformation(pairs):
     return lambda point: (rotation(point)[0] + dx, rotation(point)[1] + dy, rotation(point)[2] + dz)
 
 
+def comp2(f1, f2):  # from https://stackoverflow.com/questions/6900241/python-function-composition-max-recursion-depth-error-scope
+    return lambda *args, **kwargs: f1(f2(*args, **kwargs))
+
+
+def find_transformations_by_scanner_index(scanners):
+    transformation_by_scanner_index = dict()
+    transformation_by_scanner_index[0] = lambda a: a
+    while True:
+        if len(transformation_by_scanner_index) == len(scanners):
+            return transformation_by_scanner_index
+        for scanner_index, scanner in enumerate(scanners):
+            for known_scanner_index, known_transformation in transformation_by_scanner_index.copy().items():
+                if known_scanner_index == scanner_index:
+                    continue
+                known_scanner = scanners[known_scanner_index]
+                matching_pairs = find_matching_pairs(known_scanner, scanner)
+                if len(matching_pairs) < 3:
+                    continue
+                transformation = find_transformation(matching_pairs)
+                transformation_by_scanner_index[scanner_index] = comp2(
+                    known_transformation, transformation)  # don't fully understand why we need that...
+
+
 def debug():
+    transformation_by_scanner_index = find_transformations_by_scanner_index(scanners)
+    print(transformation_by_scanner_index)
     matching_pairs = find_matching_pairs(scanners[0], scanners[1])
-    transformation = find_transformation(matching_pairs)
+    transformation = transformation_by_scanner_index[1]
     for pair in matching_pairs:
         # print(pair)
         [(x, y, z), (_x, _y, _z)] = pair
