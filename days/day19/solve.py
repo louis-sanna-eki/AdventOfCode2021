@@ -147,4 +147,20 @@ def part1():
     print(result)
 
 
-part1()
+def part2():
+    transformation_by_scanner_index = find_transformations_by_scanner_index(
+        scanners)
+    manhattans = list()
+    for scanner_index, scanner in enumerate(scanners):
+        for _scanner_index, _scanner in enumerate(scanners):
+            if _scanner_index == scanner_index:
+                continue
+            (x, y, z) = transformation_by_scanner_index[scanner_index]((0, 0, 0))
+            (_x, _y, _z) = transformation_by_scanner_index[_scanner_index]((0, 0, 0))
+            manhattan = abs(x - _x) + abs(y - _y) + abs(z - _z)
+            manhattans.append(manhattan)
+    result = max(manhattans)
+    print(result)
+
+
+part2()
