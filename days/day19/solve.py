@@ -121,7 +121,7 @@ def find_transformations_by_scanner_index(scanners):
                     continue
                 transformation = find_transformation(matching_pairs)
                 transformation_by_scanner_index[scanner_index] = comp2(
-                    known_transformation, transformation)  # don't fully understand why we need that...
+                    known_transformation, transformation)
 
 
 def debug():
