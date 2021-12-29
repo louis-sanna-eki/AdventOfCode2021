@@ -16,7 +16,35 @@ for line in lines:
     scanner.append([int(coordinate) for coordinate in line.split(",")])
 scanners.append(scanner)
 
-CRITERIA = 3
+CRITERIA = 12
+
+# list of all 3D rotation found on https://github.com/Two9A/advent-2021/blob/main/37.py
+rotations = [
+    lambda a: [a[0],  a[1],  a[2]],
+    lambda a: [a[1],  a[2],  a[0]],
+    lambda a: [a[2],  a[0],  a[1]],
+    lambda a: [-a[0],  a[2],  a[1]],
+    lambda a: [a[2],  a[1], -a[0]],
+    lambda a: [a[1], -a[0],  a[2]],
+    lambda a: [a[0],  a[2], -a[1]],
+    lambda a: [a[2], -a[1],  a[0]],
+    lambda a: [-a[1],  a[0],  a[2]],
+    lambda a: [a[0], -a[2],  a[1]],
+    lambda a: [-a[2],  a[1],  a[0]],
+    lambda a: [a[1],  a[0], -a[2]],
+    lambda a: [-a[0], -a[1],  a[2]],
+    lambda a: [-a[1],  a[2], -a[0]],
+    lambda a: [a[2], -a[0], -a[1]],
+    lambda a: [-a[0],  a[1], -a[2]],
+    lambda a: [a[1], -a[2], -a[0]],
+    lambda a: [-a[2], -a[0],  a[1]],
+    lambda a: [a[0], -a[1], -a[2]],
+    lambda a: [-a[1], -a[2],  a[0]],
+    lambda a: [-a[2],  a[0], -a[1]],
+    lambda a: [-a[0], -a[2], -a[1]],
+    lambda a: [-a[2], -a[1], -a[0]],
+    lambda a: [-a[1], -a[0], -a[2]],
+]
 
 
 def build_fingerprint_by_point(scanner: list):
@@ -56,6 +84,8 @@ def debug():
     matching_pairs = find_matching_pairs(scanners[0], scanners[1])
     for pair in matching_pairs:
         print(pair)
+        [(x, y, z), (_x, _y, _z)] = pair
+        print(x - _x, y - _y, z - _z)
 
 
 debug()
