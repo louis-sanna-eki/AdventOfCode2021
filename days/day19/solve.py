@@ -93,14 +93,21 @@ def find_rotation(pairs):
     raise Exception("Not valid rotation found")
 
 
+def find_transformation(pairs):
+    rotation = find_rotation(pairs)
+    [(x, y, z), (_x, _y, _z)] = pairs[0]
+    (r_x, r_y, r_z) = rotation((_x, _y, _z))
+    (dx, dy, dz) = (x - r_x, y - r_y, z - r_z)
+    return lambda point: (rotation(point)[0] + dx, rotation(point)[1] + dy, rotation(point)[2] + dz)
+
+
 def debug():
     matching_pairs = find_matching_pairs(scanners[0], scanners[1])
-    rotation = find_rotation(matching_pairs)
+    transformation = find_transformation(matching_pairs)
     for pair in matching_pairs:
         # print(pair)
         [(x, y, z), (_x, _y, _z)] = pair
-        (r_x, r_y, r_z) = rotation((_x, _y, _z))
-        print((x - r_x, y - r_y, z - r_z))
+        print((x, y, z), transformation((_x, _y, _z)))
 
 
 debug()
